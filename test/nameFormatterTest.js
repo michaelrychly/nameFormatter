@@ -3,83 +3,109 @@ const assert = chai.assert;
 const expect = chai.expect;
 const NameFormatter = require('../nameFormatter');
 
-describe('invert name', function(){
-  it('should return an emtpy string when passed an emtpy string', function(){
-    const nameFormatter = new NameFormatter();
-    const inputName = "";
-    const expectedOutput = "";
+function assertNameGetsInverted(input, output){
+  assert.equal(input, output);
+};
 
-    assert.equal(nameFormatter.invertName(inputName), expectedOutput);
-  })
+describe('NameFormatter', function() {
+  describe('invert name', function(){
+    let nameFormatter;
 
-  it('should return a single name when passed a single name', function(){
-    const nameFormatter = new NameFormatter();
-    const inputName = "name";
-    const expectedOutput = "name";
+    beforeEach(function(){
+      nameFormatter = new NameFormatter();
+    });
 
-    assert.equal(nameFormatter.invertName(inputName), expectedOutput);
-  })
+    context('with input empty', function() {
+      it('should return an emtpy string when passed an emtpy string', function(){
+        const inputName = "";
+        const expectedOutput = "";
 
-  it('should return a single name when passed a single name with extra spaces', function() {
-    const nameFormatter = new NameFormatter();
-    const inputName = " name ";
-    const expectedOutput = "name";
+        assertNameGetsInverted(nameFormatter.invertName(inputName), expectedOutput);
+      })
+    })
 
-    assert.equal(nameFormatter.invertName(inputName), expectedOutput);
-  })
+    context('with input single name', function() {
+      let expectedOutput;
 
-  it('should return a last-name, first-name when passed a first and last-name', function() {
-    const nameFormatter = new NameFormatter();
-    const inputName = "first-name last-name";
-    const expectedOutput = "last-name, first-name";
+      beforeEach(function() {
+        expectedOutput = "name";
+      });
 
-    assert.equal(nameFormatter.invertName(inputName), expectedOutput);
-  })
+      it('should return a single name when passed a single name', function(){
+        const inputName = "name";
 
-  it('should return a last-name, first-name when passed a first and last-name with extra spaces around the names', function() {
-    const nameFormatter = new NameFormatter();
-    const inputName = " first-name last-name";
-    const expectedOutput = "last-name, first-name";
+        assertNameGetsInverted(nameFormatter.invertName(inputName), expectedOutput);
+      })
 
-    assert.equal(nameFormatter.invertName(inputName), expectedOutput);
-  })
+      it('should return a single name when passed a single name with extra spaces', function() {
+        const inputName = " name ";
 
-  it('should return an empty string when passed a single honorific', function() {
-    const nameFormatter = new NameFormatter();
-    const inputName = "Dr.";
-    const expectedOutput = "";
+        assertNameGetsInverted(nameFormatter.invertName(inputName), expectedOutput);
+      })
+    })
 
-    assert.equal(nameFormatter.invertName(inputName), expectedOutput);
-  })
+    context('with full input', function() {
+      let expectedOutput;
 
-  it('should return honorific first-name when passed honorific first-name', function() {
-    const nameFormatter = new NameFormatter();
-    const inputName = "Dr. first-name";
-    const expectedOutput = "Dr. first-name";
+      beforeEach(function() {
+        expectedOutput = "last-name, first-name";
+      });
 
-    assert.equal(nameFormatter.invertName(inputName), expectedOutput);
-  })
+      it('should return a last-name, first-name when passed a first and last-name', function() {
+        const inputName = "first-name last-name";
 
-  it('should return a honorific last-name, first-name when passed honorific first-name last-name', function() {
-    const nameFormatter = new NameFormatter();
-    const inputName = "Dr. first-name last-name";
-    const expectedOutput = "Dr. last-name, first-name";
+        assertNameGetsInverted(nameFormatter.invertName(inputName), expectedOutput);
+      })
 
-    assert.equal(nameFormatter.invertName(inputName), expectedOutput);
-  })
+      it('should return a last-name, first-name when passed a first and last-name with extra spaces around the names', function() {
+        const inputName = " first-name last-name";
 
-  it('should return a honorific last-name, first-name when passed honorific first-name last-name with extra spaces around the words', function() {
-    const nameFormatter = new NameFormatter();
-    const inputName = " Dr. first-name last-name ";
-    const expectedOutput = "Dr. last-name, first-name";
+        assertNameGetsInverted(nameFormatter.invertName(inputName), expectedOutput);
+      })
+    })
 
-    assert.equal(nameFormatter.invertName(inputName), expectedOutput);
-  })
+    context('with honorific', function() {
+      it('should return an empty string when passed a single honorific', function() {
+        const inputName = "Dr.";
+        const expectedOutput = "";
 
-  it('should throw an error when name is undefined', function() {
-    const nameFormatter = new NameFormatter();
-    const inputName = undefined;
+        assertNameGetsInverted(nameFormatter.invertName(inputName), expectedOutput);
+      })
 
-    expect(function() { nameFormatter.invertName(inputName); }).to.throw('Error');
-  })
-});
+      it('should return honorific first-name when passed honorific first-name', function() {
+        const inputName = "Dr. first-name";
+        const expectedOutput = "Dr. first-name";
+
+        assertNameGetsInverted(nameFormatter.invertName(inputName), expectedOutput);
+      })
+    })
+
+    context('with honorific and full name', function() {
+      let expectedOutput;
+
+      beforeEach(function() {
+        expectedOutput = "Dr. last-name, first-name";
+      });
+
+      it('should return a honorific last-name, first-name when passed honorific first-name last-name', function() {
+        const inputName = "Dr. first-name last-name";
+
+        assertNameGetsInverted(nameFormatter.invertName(inputName), expectedOutput);
+      })
+
+      it('should return a honorific last-name, first-name when passed honorific first-name last-name with extra spaces around the words', function() {
+        const inputName = " Dr. first-name last-name ";
+
+        assertNameGetsInverted(nameFormatter.invertName(inputName), expectedOutput);
+      })
+    })
+
+    context('with input undefined', function(){
+      it('should throw an error when name is undefined', function() {
+        const inputName = undefined;
+
+        expect(function() { nameFormatter.invertName(inputName); }).to.throw('Error');
+      })
+    })
+  });
+})
